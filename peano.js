@@ -144,7 +144,7 @@ function setImageAux() {
     imgcvs.height = cs;
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     ctx.drawImage(cimg, dx, dy, w*cs/as, h*cs/as);
-    genfn = generateCurve();
+    genfn = generateCurve(ctx.getImageData(0, 0, imgcvs.width, imgcvs.height));
     window.requestAnimationFrame(doStep);
 }
 
@@ -193,7 +193,6 @@ function doStep() {
 	    URL.revokeObjectURL(downloadUrl);
 	}
 	downloadUrl = URL.createObjectURL(new Blob([svg], {type: 'image/svg+xml'}));
-	delt.setAttribute('href', downloadUrl);
 	var file = document.getElementById("imgload").files[0];
 	var name;
 	if (file) {
@@ -206,9 +205,8 @@ function doStep() {
     }
 }
 
-function* generateCurve() {
+function* generateCurve(imgd) {
     var imgcvs = document.getElementById('imgcvs');
-    var imgctx = imgcvs.getContext('2d');
     var pcvs = document.getElementById('peanocvs');
     var pctx = pcvs.getContext('2d');
     var style = window.getComputedStyle(pcvs);
@@ -225,7 +223,9 @@ function* generateCurve() {
     peano.setContext(pctx);
 
     var o,d,k;
-    var imgd;
+    var imgp = imgd.data;
+    var stride = imgcvs.width * 4;
+    var idx;
     var sf = w/Math.pow(3,level);
 
     peano.scope();
@@ -260,8 +260,8 @@ function* generateCurve() {
 	   ) {
 	    gr = 0;
 	} else {
-	    imgd = imgctx.getImageData(c[0],c[1],1,1);
-	    gr = (imgd.data[0]*.3 + imgd.data[1]*.4 + imgd.data[2]*.3)/255;
+	    idx = c[1] * stride + c[0] * 4;
+	    gr = (imgp[idx]*.3 + imgp[idx + 1]*.4 + imgp[idx + 2]*.3)/255;
 	}
 
 	doLine(peano,gr);
