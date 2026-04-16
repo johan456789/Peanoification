@@ -145,7 +145,7 @@ function doStep() {
 	} else {
 	    name = 'Peano';
 	}
-	delt.setAttribute('download', name + '.svg');
+	delt.setAttribute('download', name + '-' + level + '.svg');
 	delt.classList.remove('disabled');
     }
 }
