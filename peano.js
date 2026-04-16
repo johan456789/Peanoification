@@ -20,6 +20,9 @@ function init() {
     var btn = document.getElementById('imgload');
     btn.addEventListener('change', addImage);
 
+    var download = document.getElementById('download');
+    download.addEventListener('click', downloadSVG);
+
     var lvl = document.getElementById('level');
     if (lvl.value) level = lvl.value;
     lvl.addEventListener('change', function(e) {
@@ -119,9 +122,17 @@ function setImage(e){
 }
 
 function setImageAux() {
+    var delt = document.getElementById('download');
     var imgcvs = document.getElementById('imgcvs');
     var ctx = imgcvs.getContext('2d');
     ctx.imageSmoothingEnabled = false;
+
+    if (downloadUrl) {
+	URL.revokeObjectURL(downloadUrl);
+	downloadUrl = null;
+    }
+    delt.disabled = true;
+    delete delt.dataset.filename;
 
     var w = cimg.width;
     var h = cimg.height;
@@ -141,6 +152,20 @@ function setSpeed(value, input) {
     speedLevel = Math.max(minSpeed, Math.min(maxSpeed, parseInt(value,10)));
     stepsPerFrame = speedSteps[speedLevel - minSpeed];
     input.value = speedLevel;
+}
+
+function downloadSVG() {
+    var delt = document.getElementById('download');
+    var link;
+
+    if (delt.disabled || !downloadUrl) {
+	return;
+    }
+
+    link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = delt.dataset.filename || 'Peano.svg';
+    link.click();
 }
 
 function doStep() {
@@ -176,8 +201,8 @@ function doStep() {
 	} else {
 	    name = 'Peano';
 	}
-	delt.setAttribute('download', name + '-' + level + '.svg');
-	delt.classList.remove('disabled');
+	delt.dataset.filename = name + '-' + level + '.svg';
+	delt.disabled = false;
     }
 }
 

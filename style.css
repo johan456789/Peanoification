@@ -36,12 +36,17 @@ body {
     background-color: #ddd;
     border-radius: 5px;
     padding: 5px;
-    text-decoration: none;
     color: black;
+    font: inherit;
 }
 
-.disabled {
+.download:hover:not(:disabled) {
+    cursor: pointer;
+}
+
+.download:disabled {
     color: #888;
+    cursor: default;
 }
 
 .help {
