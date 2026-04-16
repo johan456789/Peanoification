@@ -1,6 +1,7 @@
 var level;
 var genfn;
 var cimg;
+var downloadUrl;
 
 function init() {
     resize();
@@ -132,7 +133,11 @@ function doStep() {
 	genfn = false;
 	var delt = document.getElementById('download');
 	var svg = rv.value.exportToSVG().outerHTML;
-	delt.setAttribute('href', 'data:text/svg;charset=utf-8,' + encodeURIComponent(svg));
+	if (downloadUrl) {
+	    URL.revokeObjectURL(downloadUrl);
+	}
+	downloadUrl = URL.createObjectURL(new Blob([svg], {type: 'image/svg+xml'}));
+	delt.setAttribute('href', downloadUrl);
 	var file = document.getElementById("imgload").files[0];
 	var name;
 	if (file) {
