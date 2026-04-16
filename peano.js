@@ -92,12 +92,13 @@ function addImage() {
 
 function loadImage(e) {
     var img = new Image();
-    img.addEventListener("loadend", setImage);
+    img.addEventListener("load", setImage);
     img.src = e.target.result;
 }
 
 function setImage(e){
     cimg = e.target;
+    setImageAux();
 }
 
 function setImageAux() {
