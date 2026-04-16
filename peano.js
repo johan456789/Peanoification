@@ -2,6 +2,16 @@ var level;
 var genfn;
 var cimg;
 var downloadUrl;
+var speedLevel = 1;
+var minSpeed = 1;
+var maxSpeed = 10;
+var stepsPerFrame = 1;
+var speedSteps = Array.from(
+    {length: maxSpeed - minSpeed + 1},
+    function(_, i) {
+	return Math.pow(2, i);
+    }
+);
 
 function init() {
     resize();
@@ -19,6 +29,12 @@ function init() {
 	    genfn = null;
 	}
 	setImageAux();
+    });
+
+    var speed = document.getElementById('speed');
+    setSpeed(speed.value, speed);
+    speed.addEventListener('change', function(e) {
+	setSpeed(e.target.value, e.target);
     });
 
     var imgcvs = document.getElementById('imgcvs');
@@ -121,11 +137,26 @@ function setImageAux() {
     window.requestAnimationFrame(doStep);
 }
 
+function setSpeed(value, input) {
+    speedLevel = Math.max(minSpeed, Math.min(maxSpeed, parseInt(value,10)));
+    stepsPerFrame = speedSteps[speedLevel - minSpeed];
+    input.value = speedLevel;
+}
+
 function doStep() {
+    var steps;
+    var rv;
+
     if (!genfn) {
 	return;
     }
-    rv = genfn.next(true);
+
+    for (steps = 0; steps < stepsPerFrame; steps++) {
+	rv = genfn.next(true);
+	if (rv.done) {
+	    break;
+	}
+    }
 
     if (!rv.done) {
 	window.requestAnimationFrame(doStep);
