@@ -216,7 +216,8 @@ function* generateCurve(imgd) {
     pcvs.width = w;
     pcvs.height = w;
 
-    pctx.lineWidth = 2;
+    var sf = w/Math.pow(3,level);
+    pctx.lineWidth = sf/12;
     pctx.strokeStyle = 'black';
 
     var peano = new Path();
@@ -226,7 +227,6 @@ function* generateCurve(imgd) {
     var imgp = imgd.data;
     var stride = imgcvs.width * 4;
     var idx;
-    var sf = w/Math.pow(3,level);
 
     peano.scope();
     peano.moveTo([0,0]);
